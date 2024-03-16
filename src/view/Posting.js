@@ -10,15 +10,21 @@ import {
   ModalFooter,
   ModalHeader,
 } from "reactstrap";
-import { addPost, getPost, updatePost } from "../store/action/postingAction";
+import {
+  addPost,
+  deletePost,
+  getPost,
+  updatePost,
+} from "../store/action/postingAction";
 import { useDispatch, useSelector } from "react-redux";
 
 const Posting = () => {
   const dispatch = useDispatch();
-  const {posts} = useSelector((state) => state.posting)
-
+  const { posts } = useSelector((state) => state.posting);
 
   const [modal, setModal] = useState(false);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [handleDeletePost, sethandleDeletePost] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -27,16 +33,26 @@ const Posting = () => {
     thumbnail: "",
     backgroundImg: "",
     outherimage: "",
-    video:"",
+    video: "",
   });
 
   const toggle = () => {
     setModal(!modal);
   };
+
+  const toggleDelete = () => {
+    setModalDelete(!modalDelete);
+  };
+
   const handleEdit = (post) => {
     setFormData(post);
     toggle();
-    console.log(post,'byahsabniqbal')
+    console.log(post, "byahsabniqbal");
+  };
+
+  const handleDelete = (id) => {
+    toggleDelete();
+    sethandleDeletePost(id);
   };
 
   const handleInputChange = (e) => {
@@ -52,11 +68,11 @@ const Posting = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  if (formData.id) {
-    dispatch(updatePost(formData));
-  } else {
-    dispatch(addPost(formData));
-  }
+    if (formData.id) {
+      dispatch(updatePost(formData));
+    } else {
+      dispatch(addPost(formData));
+    }
     toggle();
     setFormData({
       title: "",
@@ -65,14 +81,13 @@ const Posting = () => {
       description: "",
       thumbnail: "",
       backgroundImg: "",
-      video:"",
+      video: "",
     });
   };
 
   useEffect(() => {
-    dispatch(getPost())
-  }, [])
-  
+    dispatch(getPost());
+  }, []);
 
   return (
     <>
@@ -103,41 +118,50 @@ const Posting = () => {
                 thumbnail
               </th>
               <th scope="col" className="px-6 py-3">
-                <span className="sr-only">Edit</span>
+                <span className="">Edit</span>
+                <span className="ms-5">Delete</span>
               </th>
             </tr>
           </thead>
           <tbody>
-          {posts?.map((post,index)=>(
-            <tr className="border-b bg-gray-800 border-gray-700 hover:bg-gray-600" key={index + 100}>
-              <th
-                scope="row"
-                className="px-6 py-4 font-medium  whitespace-nowrap text-white"
+            {posts?.map((post, index) => (
+              <tr
+                className="border-b bg-gray-800 border-gray-700 hover:bg-gray-600"
+                key={index + 100}
               >
-               {post.title}
-              </th>
-              <td className="px-6 py-4">{post.category}</td>
-              <td className="px-6 py-4">{post.subtitle}</td>
-              <td className="px-6 py-4">
-                <img
-                  src={post.thumbnail}
-                  className="rounded d-block"
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium  whitespace-nowrap text-white"
+                >
+                  {post.title}
+                </th>
+                <td className="px-6 py-4">{post.category}</td>
+                <td className="px-6 py-4">{post.subtitle}</td>
+                <td className="px-6 py-4">
+                  <img
+                    src={post.thumbnail}
+                    className="rounded d-block"
                     height={"80px"}
                     width={"80px"}
-                  alt="ahsan"
-                />
-              </td>
-              <td className="px-6 py-4 text-right">
-                <Button
-                 onClick={() => handleEdit(post)}
-                  className="font-medium text-blue-500 hover:underline"
-                >
-                  Edit
-                </Button> 
-              </td>
-            </tr>
-          ))}
-          
+                    alt="ahsan"
+                  />
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <Button
+                    onClick={() => handleEdit(post)}
+                    className="font-medium text-blue-500 hover:underline"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    onClick={() => handleDelete(post.id)}
+                    className="font-medium text-red-500 hover:underline ms-5"
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -288,7 +312,7 @@ const Posting = () => {
                   type="submit"
                   className="bg-blue-500 text-white p-2 rounded-md mr-2"
                 >
-                 Post 
+                  Post
                 </button>
                 <button
                   type="button"
@@ -299,6 +323,37 @@ const Posting = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE MODAL */}
+
+      {modalDelete && (
+        <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white w-96 p-8 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4 text-red-500">
+              Do you want to delete this Post?
+            </h2>
+            <div className="flex float-end gap-3">
+              {" "}
+              <Button
+                className="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                type="button"
+                onClick={toggleDelete}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="block text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                type="button"
+                onClick={() => {
+                  dispatch(deletePost(handleDeletePost), toggleDelete());
+                }}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
       )}

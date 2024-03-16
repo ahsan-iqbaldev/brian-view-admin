@@ -12,10 +12,10 @@ import Posting from './view/Posting';
 import Users from './view/Users';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import Login from './view/auth/Login';
 
-
-
-const router = createBrowserRouter([
+// Main routes
+const mainRoutes = [
   {
     path: "/",
     element: <App/>,
@@ -38,15 +38,25 @@ const router = createBrowserRouter([
       },
     ]
   },
-]);
+];
 
+const additionalRoutes = [
+  {
+    path: '/login',
+    element: <Login/>,
+  },
+];
 
+const allRoutes = [...mainRoutes, ...additionalRoutes];
+
+const router = createBrowserRouter(allRoutes);
+
+// Render
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
   </Provider>
 );
-

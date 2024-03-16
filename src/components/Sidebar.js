@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SquaresFour, List, Plus } from "phosphor-react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { ImCross } from "react-icons/im";
 
 const Sidebars = () => {
+  const Navigate = useNavigate()
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -68,6 +69,7 @@ const Sidebars = () => {
             Users
             </div>
           </Link>
+   
         </nav>
       </div>
 

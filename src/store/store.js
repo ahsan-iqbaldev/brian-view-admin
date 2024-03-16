@@ -11,7 +11,7 @@ const checkLocalStorage = () => {
   const serializedUid = localStorage.getItem("auth");
   if (serializedUid === null) return undefined;
   return {
-    // auth: JSON.parse(serializedUid),
+    auth: JSON.parse(serializedUid),
   };
 };
 

@@ -119,3 +119,21 @@ export const updatePost = (formData) => {
     }
   };
 };
+
+export const deletePost = (id) => {
+  return async (dispatch) => {
+    try {
+
+      await firebase
+        .firestore()
+        .collection("posts")
+        .doc(id)
+        .delete();
+
+      console.log("Post Deleted successfully!");
+    } catch (error) {
+      console.error("Error Deleting post:", error);
+    }
+  };
+};
+
